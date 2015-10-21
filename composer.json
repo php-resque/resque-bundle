@@ -1,0 +1,19 @@
+{
+    "name": "php-resque/resque-bundle",
+    "type": "symfony-bundle",
+    "description": "PHP Resque bundle",
+    "keywords": [],
+    "license": "MIT",
+    "require": {
+        "php": ">=5.3.3",
+        "symfony/framework-bundle": "~2.7",
+        "symfony/console": "~2.7",
+        "php-resque/resque": "dev-master"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4"
+    },
+    "autoload": {
+        "psr-4": { "Resque\\Bundle\\ResqueBundle\\": "" }
+    }
+}
