@@ -1,7 +1,5 @@
 parameters:
 
-
-
 services:
 
   # Core
@@ -13,6 +11,12 @@ services:
     class: Resque\Bundle\ResqueBundle\Bridge\EventDispatcher
     arguments:
       - @event_dispatcher
+
+
+  resque.system: @resque.system.standard
+
+  resque.system.standard:
+    class: Resque\Component\System\StandardSystem
 
   # Commands
 
@@ -36,7 +40,31 @@ services:
     tags:
        - { name: console.command }
 
-  # Registries
+  resque.command.worker_list:
+    class: Resque\Bundle\ResqueBundle\Command\WorkerListCommand
+    arguments:
+      - @resque.worker.registry
+    tags:
+       - { name: console.command }
+
+  # Worker
+
+  resque.worker.registry:
+    class: Resque\Component\Worker\Registry\WorkerRegistry
+    arguments:
+      - @resque.redis.worker_registry_adapter
+      - @resque.event_dispatcher
+      - @resque.worker.factory
+
+  resque.worker.factory:
+    class: Resque\Component\Worker\Factory\WorkerFactory
+    arguments:
+      - @resque.queue.factory
+      - @resque.job.instance_factory
+      - @resque.event_dispatcher
+      - @resque.system
+
+  # Queue
 
   resque.queue.registry:
     class: Resque\Component\Queue\Registry\QueueRegistry
@@ -52,6 +80,11 @@ services:
       - @resque.event_dispatcher
 
   # Job
+
+  resque.job.instance_factory: @resque.job.instance_factory.simple
+
+  resque.job.instance_factory.simple:
+    class: Resque\Component\Job\Factory\JobInstanceFactory
 
   # Redis
 
@@ -75,5 +108,10 @@ services:
 
   resque.redis.queue_storage:
     class: Resque\Redis\RedisQueueStorage
+    arguments:
+      - @resque.redis.client
+
+  resque.redis.worker_registry_adapter:
+    class: Resque\Redis\RedisWorkerRegistryAdapter
     arguments:
       - @resque.redis.client
