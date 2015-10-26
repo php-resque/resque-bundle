@@ -33,6 +33,6 @@ class EventDispatcher implements ResqueEventDispatcherInterface
      */
     public function dispatch($eventName, $eventContext = null)
     {
-        $this->symfonyDispatcher->dispatch($eventName);
+        // $this->symfonyDispatcher->dispatch($eventName); @todo restore.
     }
 }

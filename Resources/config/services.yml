@@ -1,0 +1,79 @@
+parameters:
+
+
+
+services:
+
+  # Core
+
+#  resque:
+#    class: Resque
+
+  resque.event_dispatcher:
+    class: Resque\Bundle\ResqueBundle\Bridge\EventDispatcher
+    arguments:
+      - @event_dispatcher
+
+  # Commands
+
+  resque.command.job_enqueue:
+    class: Resque\Bundle\ResqueBundle\Command\JobEnqueueCommand
+    tags:
+       - { name: console.command }
+
+  resque.command.queue_delete:
+    class: Resque\Bundle\ResqueBundle\Command\QueueDeleteCommand
+    arguments:
+      - @resque.queue.registry
+      - @resque.queue.factory
+    tags:
+       - { name: console.command }
+
+  resque.command.queue_list:
+    class: Resque\Bundle\ResqueBundle\Command\QueueListCommand
+    arguments:
+      - @resque.queue.registry
+    tags:
+       - { name: console.command }
+
+  # Registries
+
+  resque.queue.registry:
+    class: Resque\Component\Queue\Registry\QueueRegistry
+    arguments:
+      - @resque.event_dispatcher
+      - @resque.redis.queue_adapter
+      - @resque.queue.factory
+
+  resque.queue.factory:
+    class: Resque\Component\Queue\Factory\QueueFactory
+    arguments:
+      - @resque.redis.queue_storage
+      - @resque.event_dispatcher
+
+  # Job
+
+  # Redis
+
+  resque.redis.client: @resque.redis.predis_bridge
+
+  resque.redis.predis_bridge:
+    class: Resque\Redis\Bridge\PredisBridge
+    arguments:
+      - @resque.redis.predis_client
+
+  resque.redis.predis_client:
+    class: Predis\Client
+    arguments:
+      - ''
+      - {'prefix': 'resque:'}
+
+  resque.redis.queue_adapter:
+    class: Resque\Redis\RedisQueueRegistryAdapter
+    arguments:
+      - @resque.redis.client
+
+  resque.redis.queue_storage:
+    class: Resque\Redis\RedisQueueStorage
+    arguments:
+      - @resque.redis.client
