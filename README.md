@@ -2,7 +2,7 @@
 
 Resque for the Symfony Framework.
 
-Build Status: [![Build Status](https://api.travis-ci.org/php-resque/resque-bundle.png?branch=master)](https://travis-ci.org/php-resque/resque)
+Build Status: [![Build Status](https://api.travis-ci.org/php-resque/resque-bundle.png?branch=master)](https://travis-ci.org/php-resque/resque-bundle)
 
 This bundle brings you [PHP Resque](https://github.com/php-resque/resque) and all of it's features, plus the following:
 
