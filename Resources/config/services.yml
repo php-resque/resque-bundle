@@ -12,7 +12,6 @@ services:
     arguments:
       - @event_dispatcher
 
-
   resque.system: @resque.system.standard
 
   resque.system.standard:
@@ -22,6 +21,9 @@ services:
 
   resque.command.job_enqueue:
     class: Resque\Bundle\ResqueBundle\Command\JobEnqueueCommand
+    arguments:
+      - @resque.queue.registry
+      - @resque.queue.factory
     tags:
        - { name: console.command }
 
@@ -81,10 +83,15 @@ services:
 
   # Job
 
-  resque.job.instance_factory: @resque.job.instance_factory.simple
+  resque.job.instance_factory: @resque.job.instance_factory.container_aware
 
   resque.job.instance_factory.simple:
     class: Resque\Component\Job\Factory\JobInstanceFactory
+
+  resque.job.instance_factory.container_aware:
+    class: Resque\Bundle\ResqueBundle\Bridge\ContainerAwareJobInstanceFactory
+    calls:
+      - ['setContainer', [@service_container]]
 
   # Redis
 
@@ -105,6 +112,8 @@ services:
     class: Resque\Redis\RedisQueueRegistryAdapter
     arguments:
       - @resque.redis.client
+    tags:
+      - { name: kernel.event_listener, event: kernel.exception }
 
   resque.redis.queue_storage:
     class: Resque\Redis\RedisQueueStorage
