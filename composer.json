@@ -2,7 +2,7 @@
   "name": "php-resque/resque-bundle",
   "type": "symfony-bundle",
   "description": "PHP Resque bundle",
-  "keywords": [],
+  "keywords": ["job", "background", "redis", "resque", "worker", "bundle"],
   "license": "MIT",
   "authors": [
     {
@@ -12,8 +12,8 @@
   ],
   "require": {
     "php": ">=5.3.3",
-    "symfony/framework-bundle": "~2.7",
-    "symfony/console": "~2.7",
+    "symfony/framework-bundle": "~2.7|~3.0",
+    "symfony/console": "~2.7|~3.0",
     "php-resque/resque": "dev-master"
   },
   "require-dev": {
