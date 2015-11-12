@@ -49,6 +49,13 @@ services:
     tags:
        - { name: console.command }
 
+  resque.command.worker_start:
+    class: Resque\Bundle\ResqueBundle\Command\WorkerStartCommand
+    arguments:
+      - @resque.worker.registry
+    tags:
+       - { name: console.command }
+
   # Worker
 
   resque.worker.registry:
