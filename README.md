@@ -7,8 +7,8 @@ Build Status: [![Build Status](https://api.travis-ci.org/php-resque/resque-bundl
 This bundle brings you [PHP Resque](https://github.com/php-resque/resque) and all of it's features, plus the following:
 
  * Job targets can be services.
- * **!** Ability to defer jobs to `kernel.terminate`, for when you're not quite ready for managing background workers.
  * Commands to easily manage your background queue.
+ * **!** Ability to defer jobs to `kernel.terminate`, for when you're not quite ready for managing background workers.
  * **!** Optional ability to map job targets to specific queues. So you can avoid littering the application with queue names.
 
 It however, currently adds the complication that your background workers will need to halt/reload for application changes.

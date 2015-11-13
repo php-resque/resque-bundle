@@ -54,6 +54,6 @@ class ArrayQueueRegistryAdapter implements
      */
     public function all()
     {
-        return $this->queues;
+        return array_keys($this->queues);
     }
 }

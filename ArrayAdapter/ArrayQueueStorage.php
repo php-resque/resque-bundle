@@ -40,6 +40,10 @@ class ArrayQueueStorage implements
      */
     public function dequeue(QueueInterface $queue)
     {
+        if (!$this->storage->count()) {
+            return null;
+        }
+
         $job = $this->storage->dequeue();
 
         if (!$job) {

@@ -2,6 +2,16 @@ parameters:
 
 services:
 
+  # Example, execute jobs on flush.
+
+  resque.array_job_executor:
+    class: Resque\Bundle\ResqueBundle\EventListener\OnTerminateJobExecutor
+    arguments:
+      - @resque.queue.registry
+    tags:
+       - { name: kernel.event_listener, event: kernel.terminate, method: executeOutstandingJobs, priority: -5120  }
+       - { name: kernel.event_listener, event: console.terminate, method: executeOutstandingJobs, priority: -5120  }
+
   # Core
 
 #  resque:
@@ -58,10 +68,12 @@ services:
 
   # Worker
 
+  resque.worker.registry_adapter:  @resque.array.worker_registry_adapter
+
   resque.worker.registry:
     class: Resque\Component\Worker\Registry\WorkerRegistry
     arguments:
-      - @resque.redis.worker_registry_adapter
+      - @resque.worker.registry_adapter
       - @resque.event_dispatcher
       - @resque.worker.factory
 
@@ -75,17 +87,20 @@ services:
 
   # Queue
 
+  resque.queue.registry_adapter:  @resque.array.queue_registry_adapter
+  resque.queue.storage_adapter: @resque.array.queue_storage_adapter
+
   resque.queue.registry:
     class: Resque\Component\Queue\Registry\QueueRegistry
     arguments:
       - @resque.event_dispatcher
-      - @resque.redis.queue_adapter
+      - @resque.queue.registry_adapter
       - @resque.queue.factory
 
   resque.queue.factory:
     class: Resque\Component\Queue\Factory\QueueFactory
     arguments:
-      - @resque.redis.queue_storage
+      - @resque.queue.storage_adapter
       - @resque.event_dispatcher
 
   # Job
@@ -100,7 +115,7 @@ services:
     calls:
       - ['setContainer', [@service_container]]
 
-  # Redis
+  # Redis apdaters/storage
 
   resque.redis.client: @resque.redis.predis_bridge
 
@@ -115,14 +130,12 @@ services:
       - ''
       - {'prefix': 'resque:'}
 
-  resque.redis.queue_adapter:
+  resque.redis.queue_registry_adapter:
     class: Resque\Redis\RedisQueueRegistryAdapter
     arguments:
       - @resque.redis.client
-    tags:
-      - { name: kernel.event_listener, event: kernel.exception }
 
-  resque.redis.queue_storage:
+  resque.redis.queue_storage_adapter:
     class: Resque\Redis\RedisQueueStorage
     arguments:
       - @resque.redis.client
@@ -131,3 +144,14 @@ services:
     class: Resque\Redis\RedisWorkerRegistryAdapter
     arguments:
       - @resque.redis.client
+
+  # Array apdaters/storage
+
+  resque.array.queue_registry_adapter:
+    class: Resque\Bundle\ResqueBundle\ArrayAdapter\ArrayQueueRegistryAdapter
+
+  resque.array.queue_storage_adapter:
+    class: Resque\Bundle\ResqueBundle\ArrayAdapter\ArrayQueueStorage
+
+  resque.array.worker_registry_adapter:
+    class: Resque\Bundle\ResqueBundle\ArrayAdapter\ArrayWorkerRegistryAdapter
