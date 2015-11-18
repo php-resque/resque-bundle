@@ -7,6 +7,7 @@ services:
   resque.array_job_executor:
     class: Resque\Bundle\ResqueBundle\EventListener\OnTerminateJobExecutor
     arguments:
+      - @resque.worker.job_performer
       - @resque.queue.registry
     tags:
        - { name: kernel.event_listener, event: kernel.terminate, method: executeOutstandingJobs, priority: -5120  }
@@ -84,6 +85,12 @@ services:
       - @resque.job.instance_factory
       - @resque.event_dispatcher
       - @resque.system
+
+  resque.worker.job_performer:
+    class: Resque\Component\Worker\TaskPerformer
+    arguments:
+      - @resque.job.instance_factory
+      - @resque.event_dispatcher
 
   # Queue
 
