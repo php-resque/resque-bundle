@@ -40,7 +40,7 @@ class QueueDeleteCommand extends Command
     {
         $this
             ->setName('resque:queue:delete')
-            ->setDescription('Clears and deregisters the given queue queue')
+            ->setDescription('Clears and deregisters the given queue')
             ->addArgument('queue', InputArgument::REQUIRED, 'Queue name');
     }
 

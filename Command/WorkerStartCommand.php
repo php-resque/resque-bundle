@@ -32,7 +32,7 @@ class WorkerStartCommand extends Command
     {
         $this
             ->setName('resque:worker:start')
-            ->setDescription('Lists all known workers and the number of jobs they have')
+            ->setDescription('Starts a new worker process on this host')
             ->addArgument('queues', InputArgument::REQUIRED, 'The queue names (in order) the workers will retrieve jobs from')
             ->addArgument('count', InputArgument::OPTIONAL, 'The number of workers to start', 1);
 //

@@ -38,6 +38,13 @@ services:
     tags:
        - { name: console.command }
 
+  resque.command.job_perform:
+    class: Resque\Bundle\ResqueBundle\Command\JobPerformCommand
+    arguments:
+      - @resque.worker.job_performer
+    tags:
+       - { name: console.command }
+
   resque.command.queue_delete:
     class: Resque\Bundle\ResqueBundle\Command\QueueDeleteCommand
     arguments:
@@ -87,7 +94,7 @@ services:
       - @resque.system
 
   resque.worker.job_performer:
-    class: Resque\Component\Worker\TaskPerformer
+    class: Resque\Component\Worker\JobPerformer
     arguments:
       - @resque.job.instance_factory
       - @resque.event_dispatcher

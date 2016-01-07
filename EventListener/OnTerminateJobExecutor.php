@@ -5,7 +5,7 @@ namespace Resque\Bundle\ResqueBundle\EventListener;
 use Resque\Component\Job\Model\JobInterface;
 use Resque\Component\Queue\Model\QueueInterface;
 use Resque\Component\Queue\Registry\QueueRegistryInterface;
-use Resque\Component\Worker\TaskPerformer;
+use Resque\Component\Worker\JobPerformer;
 
 class OnTerminateJobExecutor
 {
@@ -17,14 +17,14 @@ class OnTerminateJobExecutor
     /**
      * Constructor.
      *
-     * @param TaskPerformer $taskPerformer
+     * @param JobPerformer $jobPerformer
      * @param QueueRegistryInterface $queueRegistry
      */
     public function __construct(
-        TaskPerformer $taskPerformer,
+        JobPerformer $jobPerformer,
         QueueRegistryInterface $queueRegistry
     ) {
-        $this->taskPerformer = $taskPerformer;
+        $this->jobPerformer = $jobPerformer;
         $this->queueRegistry = $queueRegistry;
     }
 
@@ -46,6 +46,6 @@ class OnTerminateJobExecutor
 
     protected function executeJob(JobInterface $job)
     {
-        $this->taskPerformer->perform($job);
+        $this->jobPerformer->perform($job);
     }
 }

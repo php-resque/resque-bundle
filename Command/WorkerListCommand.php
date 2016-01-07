@@ -31,7 +31,7 @@ class WorkerListCommand extends Command
     {
         $this
             ->setName('resque:worker:list')
-            ->setDescription('Lists all known workers and the number of jobs they have');
+            ->setDescription('Lists all known workers');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
