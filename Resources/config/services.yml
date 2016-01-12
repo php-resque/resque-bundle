@@ -15,9 +15,6 @@ services:
 
   # Core
 
-#  resque:
-#    class: Resque
-
   resque.event_dispatcher:
     class: Resque\Bundle\ResqueBundle\Bridge\EventDispatcher
     arguments:
@@ -27,6 +24,13 @@ services:
 
   resque.system.standard:
     class: Resque\Component\System\StandardSystem
+
+  resque.foreman:
+    class: Resque\Component\Core\Foreman
+    arguments:
+      - @resque.worker.registry
+      - @resque.event_dispatcher
+      - @resque.system
 
   # Commands
 
@@ -70,7 +74,7 @@ services:
   resque.command.worker_start:
     class: Resque\Bundle\ResqueBundle\Command\WorkerStartCommand
     arguments:
-      - @resque.worker.registry
+      - @resque.foreman
     tags:
        - { name: console.command }
 
