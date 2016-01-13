@@ -3,7 +3,9 @@
 namespace Resque\Bundle\ResqueBundle\Command;
 
 use Resque\Component\Core\Foreman;
+use Resque\Component\Queue\Registry\QueueRegistryInterface;
 use Resque\Component\Queue\WildcardQueue;
+use Resque\Component\Worker\Factory\WorkerFactoryInterface;
 use Resque\Component\Worker\Registry\WorkerRegistryInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -24,8 +26,13 @@ class WorkerStartCommand extends Command
      *
      * @param Foreman $foreman
      */
-    public function __construct(Foreman $foreman)
-    {
+    public function __construct(
+        QueueRegistryInterface $queueRegistry,
+        WorkerFactoryInterface $workerFactory,
+        Foreman $foreman
+    ) {
+        $this->queueRegistry = $queueRegistry;
+        $this->workerFactory = $workerFactory;
         $this->foreman = $foreman;
 
         parent::__construct();
@@ -66,12 +73,13 @@ class WorkerStartCommand extends Command
         $workers = array();
         for ($i = 0; $i < $workerCount; ++$i) {
             $worker = $this->workerFactory->createWorker();
+            $workerProcess = $this->workerFactory->createWorkerProcess($worker);
 
             foreach ($queues as $queue) {
                 $worker->addQueue($queue);
             }
 
-            $workers[] = $worker;
+            $workers[] = $workerProcess;
         }
 
         $this->foreman->pruneDeadWorkers();
@@ -84,10 +92,10 @@ class WorkerStartCommand extends Command
             implode($queues, ',')
         );
 
-        echo sprintf(
-            'Workers (%s)',
-            implode(', ', $workers)
-        );
+//        echo sprintf(
+//            'Workers (%s)',
+//            implode(', ', $workers)
+//        );
     }
 
     protected function createQueues($queuesArg)

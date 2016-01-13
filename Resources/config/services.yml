@@ -74,6 +74,8 @@ services:
   resque.command.worker_start:
     class: Resque\Bundle\ResqueBundle\Command\WorkerStartCommand
     arguments:
+      - @resque.queue.registry
+      - @resque.worker.factory
       - @resque.foreman
     tags:
        - { name: console.command }
